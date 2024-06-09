@@ -1,5 +1,2 @@
 pandas
 numpy
-category_encoders
-glob
-scikit-learn
