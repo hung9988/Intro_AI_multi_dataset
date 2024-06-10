@@ -5,3 +5,4 @@ category-encoders
 seaborn
 matplotlib
 imbalanced-learn
+ipykernel
