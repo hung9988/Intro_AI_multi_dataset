@@ -2,3 +2,6 @@ pandas
 numpy
 scikit-learn
 category-encoders
+seaborn
+matplotlib
+imbalanced-learn
