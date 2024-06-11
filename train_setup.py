@@ -10,13 +10,10 @@ from sklearn.metrics import RocCurveDisplay, PrecisionRecallDisplay, classificat
 from sklearn.metrics import f1_score
 import pickle
 import matplotlib.pyplot as plt 
-<<<<<<< HEAD
 import joblib
-=======
 
 from sklearn.ensemble import VotingClassifier
 
->>>>>>> 885defc (adding 4 more models, todo: aggreate the code into 1 file)
 class Model_selection():
     def __init__(self):
         pass   
