@@ -39,6 +39,7 @@ class PreProcessor():
         self.dataset.rename(columns={label_column: 'churn'}, inplace=True)
         return self
     
+    
     def split_features_labels(self):
         self.X=self.dataset.drop('churn',axis=1)
         self.y=self.dataset['churn'].astype(float)
