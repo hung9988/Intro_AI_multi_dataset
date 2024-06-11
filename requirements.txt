@@ -6,3 +6,7 @@ seaborn
 matplotlib
 imbalanced-learn
 ipykernel
+streamlit
+joblib
+optuna
+streamlit

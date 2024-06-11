@@ -4,7 +4,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import RocCurveDisplay, PrecisionRecallDisplay, classification_report
 import matplotlib.pyplot as plt 
-
+import joblib
 class Model_selection():
     def __init__(self):
         pass   
@@ -63,6 +63,10 @@ class Model_selection():
         nn.fit(self.X_train,self.y_train)
         self.rf_model = rf
         self.nn_model = nn
+        
+            # Save the models
+        joblib.dump(self.rf_model, 'rf_model.joblib')
+        joblib.dump(self.nn_model, 'nn_model.joblib')
         
 
     
