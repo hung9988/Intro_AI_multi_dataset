@@ -151,7 +151,7 @@ class Model_selection():
         
         
         
-        voting = VotingClassifier(estimators=[('rf', rf), ('nn', nn), ('gb', gb), ('svm', svm), ('knn', knn), ('lr', lr)], voting='soft')
+        voting = VotingClassifier(estimators=[('rf', rf), ('nn', nn), ('gb', gb), ('knn', knn)], voting='soft')
         voting.fit(self.X_train,self.y_train)
         
 

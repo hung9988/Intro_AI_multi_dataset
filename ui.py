@@ -1,23 +1,16 @@
 import streamlit as st
 import pandas as pd
-import joblib
+import pickle  # Use pickle to load the model
 from pre_processor import PreProcessor
 
-# Load your trained models
-rf_model = joblib.load('rf_model.joblib')
-mlp_model = joblib.load('nn_model.joblib')
+# Load your trained model
+with open('best_model.pkl', 'rb') as file:
+    data= pickle.load(file)
 
+
+model=data['best_model']
 # Streamlit UI
 st.title('Prediction App')
-
-# Model selection
-model_option = st.selectbox('Choose a model for prediction:', ('Random Forest', 'MLP Classifier'))
-
-# Load the selected model
-if model_option == 'Random Forest':
-    model = rf_model
-else:
-    model = mlp_model
 
 # File uploader allows user to add their own CSV or Excel
 uploaded_file = st.file_uploader("Upload your input CSV or Excel file", type=["csv", "xlsx"])
@@ -55,11 +48,11 @@ if uploaded_file is not None:
               ordinal_encode(ordinal_encode_columns).\
                 oversample()
     pre_processor.calculate_feature_importance()
-    pre_processor.remove_features_by_importance(0.01)
+    pre_processor.remove_features_by_importance(0.00)
     pre_processor.split_features_labels()
     X = pre_processor.X
     y = pre_processor.y
-
+    print(X)
     # Display the processed dataframe
     st.write("Processed Data Preview:")
     st.dataframe(X) 
@@ -69,9 +62,10 @@ if uploaded_file is not None:
         predictions = model.predict(X)
         
         # Append predictions to the dataframe for display
-         # Create a copy of X to display to avoid modifying the original dataframe
-        X['Predict'] = predictions  # Append the predictions as a new column
+        # Create a copy of X to display to avoid modifying the original dataframe
+        X_display = X.copy()  # Create a copy of X to modify
+        X_display['churn'] = predictions  # Append the predictions as a new column
         
         # Displaying the updated dataframe with predictions
         st.write("Data Preview with Predictions:")
-        st.dataframe(X)
+        st.dataframe(X_display)
