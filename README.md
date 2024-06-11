@@ -10,3 +10,8 @@ You must have
 - pip
 
 before downloading the code to be able to install the libraries in requirements.txt
+
+#### TO INSTALL LIBRARIES: DOUBLE CLICK INSTALL LIB.bat
+#### TO RUN DEMO: DOUBLE CLICK RUN.bat
+
+### DEMO ONLY ACCEPTS dataset0.csv
