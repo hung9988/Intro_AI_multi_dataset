@@ -212,6 +212,7 @@ class Model_selection():
         lr_disp = RocCurveDisplay.from_estimator(self.lr_model, self.X_test, self.y_test, ax=ax)
         voting_disp = RocCurveDisplay.from_estimator(self.voting_model, self.X_test, self.y_test, ax=ax)
         
+        self.roc_plot = ax
         plt.show()
         
     def precision_recall_curve(self):
@@ -224,7 +225,7 @@ class Model_selection():
         knn_disp = PrecisionRecallDisplay.from_estimator(self.knn_model, self.X_test, self.y_test, ax=ax)
         lr_disp = PrecisionRecallDisplay.from_estimator(self.lr_model, self.X_test, self.y_test, ax=ax)
         voting_disp = PrecisionRecallDisplay.from_estimator(self.voting_model, self.X_test, self.y_test, ax=ax)
-        
+        self.pr_plot = ax
         plt.show()
         
     def choose_best_model(self, model):
