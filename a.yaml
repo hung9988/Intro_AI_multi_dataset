@@ -1,0 +1,389 @@
+openapi: 3.1.0
+info:
+  title: Google Drive API
+  description: The Google Drive API allows clients to access resources from Google Drive.
+  version: v3
+servers:
+  - url: https://www.googleapis.com
+paths:
+  /drive/v3/files/{fileId}:
+    patch:
+      summary: Update a file's metadata and/or content
+      operationId: updateFile
+      parameters:
+        - name: fileId
+          in: path
+          description: The ID of the file.
+          required: true
+          schema:
+            type: string
+        - name: addParents
+          in: query
+          required: false
+          description: A comma-separated list of parent IDs to add.
+          schema:
+            type: string
+        - name: keepRevisionForever
+          in: query
+          required: false
+          description: Whether to set the 'keepForever' field in the new head revision.
+          schema:
+            type: boolean
+            default: false
+        - name: ocrLanguage
+          in: query
+          required: false
+          description: A language hint for OCR processing during image import (ISO 639-1 code).
+          schema:
+            type: string
+        - name: removeParents
+          in: query
+          required: false
+          description: A comma-separated list of parent IDs to remove.
+          schema:
+            type: string
+        - name: supportsAllDrives
+          in: query
+          required: false
+          description: Whether the requesting application supports both My Drives and shared drives.
+          schema:
+            type: boolean
+            default: false
+        - name: useContentAsIndexableText
+          in: query
+          required: false
+          description: Whether to use the uploaded content as indexable text.
+          schema:
+            type: boolean
+            default: false
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the file.
+                description:
+                  type: string
+                  description: The description of the file.
+                mimeType:
+                  type: string
+                  description: The MIME type of the file.
+                parents:
+                  type: array
+                  items:
+                    type: string
+                  description: A list of parent IDs to which the file belongs.
+      responses:
+        200:
+          description: Successful file update
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the updated file
+                  name:
+                    type: string
+                    description: The name of the updated file
+                  mimeType:
+                    type: string
+                    description: The MIME type of the updated file
+        400:
+          description: Bad request
+        401:
+          description: Authorization error
+    delete:
+      summary: Deletes a file.
+      operationId: deleteFile
+      parameters:
+        - name: fileId
+          in: path
+          description: ID of the file to delete.
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful file deletion
+        400:
+          description: Bad request
+        401:
+          description: Authorization error
+        404:
+          description: File not found
+  /drive/v3/files:
+    post:
+      summary: Creates a new folder
+      operationId: createFolder
+      parameters:
+        - name: access_token
+          in: query
+          description: OAuth access token.
+          required: false
+          schema:
+            type: string
+        - name: alt
+          in: query
+          description: Data format for response.
+          required: false
+          schema:
+            type: string
+            enum:
+              - json
+              - media
+              - proto
+            default: json
+        - name: fields
+          in: query
+          description: Selector specifying which fields to include in a partial response.
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the folder
+                mimeType:
+                  type: string
+                  description: The MIME type of the folder, should be 'application/vnd.google-apps.folder'
+                  example: application/vnd.google-apps.folder
+              required:
+                - name
+                - mimeType
+      responses:
+        200:
+          description: Successful folder creation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the created folder
+                  name:
+                    type: string
+                    description: The name of the created folder
+        400:
+          description: Bad request
+        401:
+          description: Authorization error
+    get:
+      summary: Lists or searches files and folders
+      operationId: listFiles
+      parameters:
+        - name: access_token
+          in: query
+          description: OAuth access token.
+          required: false
+          schema:
+            type: string
+        - name: q
+          in: query
+          description: A query for filtering the file results. See the "Search for files & folders" guide for supported syntax.
+          required: false
+          schema:
+            type: string
+        - name: pageSize
+          in: query
+          description: The maximum number of files to return per page. Partial or empty result pages are possible even before the end of the files list has been reached.
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 1
+            maximum: 1000
+        - name: pageToken
+          in: query
+          description: The token for continuing a previous list request on the next page. This should be set to the value of 'nextPageToken' from the previous response.
+          required: false
+          schema:
+            type: string
+        - name: fields
+          in: query
+          description: Selector specifying which fields to include in a partial response.
+          required: false
+          schema:
+            type: string
+        - name: spaces
+          in: query
+          description: A comma-separated list of spaces to query within the corpora. Supported values are 'drive' and 'appDataFolder'.
+          required: false
+          schema:
+            type: string
+            default: drive
+      responses:
+        200:
+          description: Successful file listing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  kind:
+                    type: string
+                    description: Identifies what kind of resource this is. Value: the fixed string 'drive#fileList'.
+                  nextPageToken:
+                    type: string
+                    description: The page token for the next page of files. This will be absent if the end of the files list has been reached.
+                  incompleteSearch:
+                    type: boolean
+                    description: Whether the search process was incomplete. If true, then some search results may be missing, since all documents were not searched. This may occur when searching multiple drives with the 'allDrives' corpora, but all corpora could not be searched. When this happens, the search response will include an 'incompleteSearch' boolean field with the value 'true'.
+                  files:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: The ID of the file.
+                        name:
+                          type: string
+                          description: The name of the file.
+                        mimeType:
+                          type: string
+                          description: The MIME type of the file.
+        400:
+          description: Bad request
+        401:
+          description: Authorization error
+  /drive/v3/files/{fileId}/copy:
+    post:
+      summary: Creates a copy of a file
+      operationId: copyFile
+      parameters:
+        - name: fileId
+          in: path
+          description: The ID of the file.
+          required: true
+          schema:
+            type: string
+        - name: access_token
+          in: query
+          description: OAuth access token.
+          required: false
+          schema:
+            type: string
+        - name: enforceSingleParent
+          in: query
+          description: Deprecated. Copying files into multiple folders is no longer supported. Use shortcuts instead.
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: ignoreDefaultVisibility
+          in: query
+          description: Whether to ignore the domain's default visibility settings for the created file. Domain administrators can choose to make all uploaded files visible to the domain by default; this parameter bypasses that behavior for the request. Permissions are still inherited from parent folders.
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: keepRevisionForever
+          in: query
+          description: Whether to set the 'keepForever' field in the new head revision. This is only applicable to files with binary content in Google Drive. Only 200 revisions for the file can be kept forever. If the limit is reached, try deleting pinned revisions.
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: ocrLanguage
+          in: query
+          description: A language hint for OCR processing during image import (ISO 639-1 code).
+          required: false
+          schema:
+            type: string
+        - name: supportsAllDrives
+          in: query
+          description: Whether the requesting application supports both My Drives and shared drives.
+          required: false
+          schema:
+            type: boolean
+            default: false
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the new file.
+                description:
+                  type: string
+                  description: The description of the new file.
+                parents:
+                  type: array
+                  items:
+                    type: string
+                  description: A list of parent IDs for the new file.
+      responses:
+        200:
+          description: Successful file copy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the copied file
+                  name:
+                    type: string
+                    description: The name of the copied file
+                  mimeType:
+                    type: string
+                    description: The MIME type of the copied file
+        400:
+          description: Bad request
+        401:
+          description: Authorization error
+  /upload/drive/v3/files:
+    post:
+      summary: Uploads a new file
+      operationId: uploadFile
+      parameters:
+        - name: uploadType
+          in: query
+          description: The type of upload request to the /upload URI. Accepted values are 'media', 'multipart', and 'resumable'.
+          required: true
+          schema:
+            type: string
+            enum:
+              - media
+              - multipart
+              - resumable
+        - name: access_token
+          in: query
+          description: OAuth access token.
+          required: false
+          schema:
+            type: string
+        - name: fields
+          in: query
+          description: Selector specifying which fields to include in a partial response.
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/related:
+            schema:
+              type: object
+              properties:
+                metadata:
+                  type: string
+                  format: binary
+                  description: JSON metadata about the file being uploaded
