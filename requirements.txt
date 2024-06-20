@@ -9,4 +9,4 @@ ipykernel
 streamlit
 joblib
 optuna
-streamlit
+pickle
